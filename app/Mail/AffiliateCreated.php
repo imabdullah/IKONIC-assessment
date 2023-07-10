@@ -30,7 +30,6 @@ class AffiliateCreated extends Mailable
      */
     public function build()
     {
-        Log::info("im bit");
         return $this->view('welcome');
     }
 }

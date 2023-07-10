@@ -74,8 +74,6 @@ class OrderServiceTest extends TestCase
         $order = Order::factory()
             ->for(Merchant::factory()->for(User::factory()))
             ->create();
-        Log::info("testing duplicate order");
-        Log::info($order);
         $data = [
             'order_id' => $order->id,
             'subtotal_price' => round(rand(100, 999) / 3, 2),

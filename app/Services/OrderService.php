@@ -39,11 +39,6 @@ class OrderService
         $affiliate = Affiliate::where('merchant_id', $merchant->id)->first();
 
         $commission_owed = $data['subtotal_price'] * (isset($affiliate) ? $affiliate->commission_rate : 1);
-        Log::info($commission_owed);
-
-        Log::info("here is it");
-        Log::info(Order::all());
-        Log::info('Order id: ' . $data['order_id']);
         $order = Order::find($data['order_id']);
         if (!$order)
 
@@ -54,7 +49,6 @@ class OrderService
                 'commission_owed' => $commission_owed,
                 'order_id' => $data['order_id']
             ]);
-        Log::info(Order::all());
         $affiliate = $this->affiliateService->register($merchant, $data['customer_email'], $data['customer_name'], $merchant->default_commission_rate);
     }
 }

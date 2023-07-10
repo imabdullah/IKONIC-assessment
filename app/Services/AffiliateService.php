@@ -30,21 +30,31 @@ class AffiliateService
     public function register(Merchant $merchant, string $email, string $name, float $commissionRate): Affiliate
     {
         // TODO: Complete this method
+
+        $is_email_merchant = $merchant->user()->where('email', $email)->first();
+        if ($is_email_merchant) {
+        } else {
+
+            $merchant->update([
+                'display_name' => $name,
+                'default_commission_rate' => $commissionRate
+            ]);
+
+            $user = $merchant->user()->create([
+                'name' => $name,
+                'email' => $email,
+                'type' => User::TYPE_AFFILIATE
+            ]);
+        }
+
         $affiliate =  Affiliate::create([
-            'user_id' => $merchant->user_id,
+            'user_id' => isset($user) ? $user->id : $merchant->user_id,
             'merchant_id' => $merchant->id,
             'commission_rate' => $commissionRate,
             'discount_code' => $this->apiService->createDiscountCode($merchant)['code']
         ]);
         Mail::to($email)->send(new AffiliateCreated($affiliate));
         //$merchant->user()->first()->update(['email' => $email, 'name' => $name, 'type' => User::TYPE_MERCHANT]);
-
-        $merchant->user()->create([
-            'name' => $name,
-            'email' => $email,
-            'type' => User::TYPE_AFFILIATE
-        ]);
-
         return $affiliate;
     }
 }
